@@ -2,7 +2,7 @@
 
 **A Multi-Agent AI Team for Automated Design Engineering**
 
-This repository contains the configuration and logic for **UPower Design 2.0**, an AI-native meta-framework that turns abstract ideas into production-ready frontend code through a simulated team of experts.
+This repository contains the configuration and logic for **UPower Design Beta**, an AI-native meta-framework that turns abstract ideas into production-ready frontend code through a simulated team of experts.
 
 ## 0. The Collaborative Workflow (Agent Team)
 
