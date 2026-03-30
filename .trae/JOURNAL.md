@@ -5,6 +5,16 @@ It serves as a raw feed for future Changelogs or Case Studies.
 
 ## 🌟 Highlights
 
+### [2026-03-29 00:00] 💡 AI 比赛通过初审，进入周二路演展示
+*   **Trigger**: User Praise / Major Milestone (Roadshow Scheduled)
+*   **Context**: User confirmed the AI competition entry passed initial review and will present on Tuesday. Narrative positioning is grounded and non-hype: a self-built virtual team for deeper thinking and higher-quality execution, emphasizing practice over slogans.
+*   **Quote**: "atlas，cool news。我ai比赛，投稿你们Upower design过了初审了，周二要路演展示。"
+
+### [2026-03-29 00:00] 💡 修复新建项目误生成 “input 2” 空目录
+*   **Trigger**: System Event (Bug Fix)
+*   **Context**: Updated scaffolding to automatically remove empty duplicate input directories (e.g., "input 2") under `Source/<Project>/` during project initialization, preventing confusing artifacts on macOS.
+*   **Quote**: "现在每次新建项目你会默认新建2个input文件夹，其中2是空的如 `/Users/lealee/.../Source/Tuesday_Presentation/input 2`"
+
 ### [2026-03-19 00:52] 💡 AI 比赛对外传播落地页完成可预览版本
 *   **Trigger**: Major Milestone (Preview Ready)
 *   **Context**: Initialized Source/AI_Contest_Landing and a runnable Vite+React+TS+Tailwind prototype under projects/AI_Contest_Landing. Synced user constraints (对外传播、无报名入口、公司名可展示、不展示评委、仅节点时间) into PRD and content payload, and delivered a previewable landing page aligned to ucloud.cn style direction.

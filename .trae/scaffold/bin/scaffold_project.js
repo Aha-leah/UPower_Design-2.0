@@ -15,6 +15,42 @@ const sourceDir = path.join(rootDir, 'Source', projectName);
 const projectsDir = path.join(rootDir, 'projects');
 const targetDir = path.join(projectsDir, projectName);
 
+function cleanupDuplicateInputDirs(projectSourceDir) {
+  let dirents;
+  try {
+    dirents = fs.readdirSync(projectSourceDir, { withFileTypes: true });
+  } catch {
+    return;
+  }
+
+  const extras = dirents
+    .filter((d) => d.isDirectory() && /^input\s+\d+$/.test(d.name))
+    .map((d) => d.name);
+
+  if (extras.length === 0) return;
+
+  const inputDir = path.join(projectSourceDir, 'input');
+  if (!fs.existsSync(inputDir)) fs.mkdirSync(inputDir, { recursive: true });
+
+  for (const name of extras) {
+    const extraPath = path.join(projectSourceDir, name);
+    let extraEntries = [];
+    try {
+      extraEntries = fs.readdirSync(extraPath);
+    } catch {
+      extraEntries = ['__unreadable__'];
+    }
+
+    if (extraEntries.length === 0) {
+      fs.rmSync(extraPath, { recursive: true, force: true });
+      console.log(`   🧹 Removed empty duplicate folder: ${name}`);
+      continue;
+    }
+
+    console.warn(`   ⚠️  Duplicate folder not empty, skipping auto-fix: ${name}`);
+  }
+}
+
 // 1. Validate Source Exists
 if (!fs.existsSync(sourceDir)) {
   console.log(`ℹ️  Source directory not found. Creating: ${sourceDir}`);
@@ -36,6 +72,8 @@ if (!fs.existsSync(sourceDir)) {
     console.log('   ✅ Initialized empty Source structure');
   }
 }
+
+cleanupDuplicateInputDirs(sourceDir);
 
 // 2. Ensure projects/ folder exists
 if (!fs.existsSync(projectsDir)) {
