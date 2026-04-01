@@ -6,19 +6,19 @@
 
 ---
 
-## ⚠️ Runtime Dependency & Evaluation Guide
+## Runtime & Compatibility
 
 ### English
-**UPower Design is native to Trae IDE.** 
-The multi-agent workflow, `Skill` orchestration, and `.trae/rules` auto-injection rely heavily on Trae's specific capabilities.
-- **Full Experience (Trae):** Please open this project in **Trae IDE** and type `@Builder /opentalk Let's design a landing page` to experience the complete Agent team.
-- **Other IDEs (Cursor / VS Code):** If you open this package in other IDEs, you will **not** be able to wake up Atlas or the agents directly. However, you can still experience our **"Evidence Chain"** philosophy. You can point your IDE's AI (like Cursor Composer) to the `Source/` directory to read our highly structured offline assets (`brand_dna.md`, `system_prompt.md`). This proves that our workflow leaves no "black box" behind, ensuring full human control even if the AI engine is swapped.
+**UPower Design is native to Trae IDE.**
+The multi-agent workflow, skill orchestration, and `.trae/rules` auto-injection rely on Trae-specific capabilities.
+- **Recommended (Trae):** Open this project in **Trae IDE** and type `@Builder /opentalk Let's design a landing page` to run the full workflow.
+- **Other IDEs (Cursor / VS Code):** You may not be able to wake Atlas or the agents directly, but you can still reuse the **evidence-chain assets** by pointing your IDE’s AI to `Source/` (e.g., `brand_dna.md`, `system_prompt.md`).
 
 ### 中文
-**UPower Design 是基于 Trae IDE 原生构建的。**
-多智能体协作、`Skill` 调度和 `.trae/rules` 规则注入均强依赖 Trae 的底层机制。
-- **完整体验 (强烈建议使用 Trae)：** 请使用 **Trae IDE** 打开本项目，在右侧对话框输入 `@Builder /opentalk 我们来设计一个落地页` 即可唤醒团队。
-- **其他 IDE (Cursor / VS Code) 转换建议：** 如果您使用其他 IDE 打开本包，将**无法直接唤起** Atlas 及其团队。但您依然可以体验 UPower 的核心价值——**“资产证据链”**。您可以让其他 AI 读取 `Source/` 目录下的结构化文档（如 `brand_dna.md`, `system_prompt.md`）作为高质量上下文辅助编码。这正是 UPower 的初衷：即使脱离了特定的 AI 引擎，业务和设计的全盘决策依然以极度清晰的文档形式保留，没有“黑盒”。
+**UPower Design 基于 Trae IDE 原生构建。**
+多智能体协作、Skill 调度与 `.trae/rules` 规则注入依赖 Trae 的底层机制。
+- **推荐方式（Trae）：** 使用 **Trae IDE** 打开本项目，在对话框输入 `@Builder /opentalk 我们来设计一个落地页` 运行完整流程。
+- **其他 IDE（Cursor / VS Code）：** 可能无法直接唤起 Atlas，但仍可复用 **资产证据链**：让 IDE 的 AI 读取 `Source/` 下结构化文档（如 `brand_dna.md`、`system_prompt.md`）作为高质量上下文。
 
 ---
 
@@ -58,9 +58,9 @@ graph TD
 
     %% Phase 3: Evolve
     subgraph "Phase 3: Evolve"
-        App -->|Audit| User
+        App -->|Review| User
         User -->|Feedback| Scribe
-        Scribe -->|Log| Memory[".trae/JOURNAL.md"]
+        Scribe -->|Log| Memory["Change Notes"]
     end
 ```
 
@@ -94,7 +94,7 @@ We use a slash-command system to interact with the squad. See `.trae/skills/COMM
 | Historian | Scribe | Documentation & Knowledge |
 | Internet Access (Optional) | AR (Agent Reach) | Web/GitHub/Video/Weibo retrieval |
 
-## 3. Getting Started (Recommended for Demo / Recording)
+## 3. Getting Started
 
 1. `/new <ProjectName>` → creates `Source/<ProjectName>/`
 2. `/opentalk <Topic>` → align on positioning & sections
@@ -119,7 +119,7 @@ We use a slash-command system to interact with the squad. See `.trae/skills/COMM
 ## 5. Knowledgebase Templates
 
 - PRD / execution templates live in `.trae/knowledgebase/file_template/`.
-- Release packaging checklist template: `.trae/knowledgebase/file_template/kb_release_packaging_template.md`.
+- Release packaging checklist is internal and may not be included in distribution packages.
 
 ---
 
@@ -132,7 +132,7 @@ We use a slash-command system to interact with the squad. See `.trae/skills/COMM
   - Refreshed packaging rules to exclude global-only/meta references and common build artifacts.
 - **Impact (影响)**:
   - Skills trigger more reliably (less under-triggering due to vague descriptions).
-  - Evaluators can verify outcomes deterministically by checking outputs listed in Success Criteria, rather than “vibe-based” judging.
+  - Users can verify outcomes deterministically by checking outputs listed in Success Criteria, rather than “vibe-based” guessing.
   - Lower risk of “some entries don’t work” caused by non-parsable or inconsistent specs.
 - **Benefits (利好)**:
   - Clearer auditability: each role has a testable input/output contract.
