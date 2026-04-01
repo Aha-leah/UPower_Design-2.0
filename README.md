@@ -6,7 +6,7 @@
 
 ---
 
-## ⚠️ Runtime Dependency & Evaluation Guide (评委体验必读)
+## ⚠️ Runtime Dependency & Evaluation Guide
 
 ### English
 **UPower Design is native to Trae IDE.** 
