@@ -1,4 +1,4 @@
-# UPower Design 2.3
+# UPower Design 3.3
 
 **A Multi-Agent AI Team for Automated Design Engineering**
 
@@ -6,196 +6,295 @@
 
 ---
 
-## Runtime & Compatibility
+## ⚠️ Runtime Dependency & Evaluation Guide (评委体验必读)
 
 ### English
-**UPower Design is native to Trae IDE.**
-The multi-agent workflow, skill orchestration, and `.trae/rules` auto-injection rely on Trae-specific capabilities.
-- **Recommended (Trae):** Open this project in **Trae IDE** and type `@Builder /opentalk Let's design a landing page` to run the full workflow.
-- **Other IDEs (Cursor / VS Code):** You may not be able to wake Atlas or the agents directly, but you can still reuse the **evidence-chain assets** by pointing your IDE’s AI to `Source/` (e.g., `brand_dna.md`, `system_prompt.md`).
+**UPower Design runs on Trae IDE and OpenCode.**
+The multi-agent workflow, `Skill` orchestration, and `.trae/rules` auto-injection rely on IDE-native agent capabilities.
+- **Full Experience (Trae / OpenCode):** Open this project in **Trae IDE** or **OpenCode** to experience the complete Agent team.
+- **Other IDEs (Cursor / VS Code):** You can still experience UPower's core value — **"Evidence Chain"**. Point your IDE's AI to the `Source/` directory to read the structured offline assets (`brand_dna.md`, `system_prompt.md`) as high-quality context for coding.
 
 ### 中文
-**UPower Design 基于 Trae IDE 原生构建。**
-多智能体协作、Skill 调度与 `.trae/rules` 规则注入依赖 Trae 的底层机制。
-- **推荐方式（Trae）：** 使用 **Trae IDE** 打开本项目，在对话框输入 `@Builder /opentalk 我们来设计一个落地页` 运行完整流程。
-- **其他 IDE（Cursor / VS Code）：** 可能无法直接唤起 Atlas，但仍可复用 **资产证据链**：让 IDE 的 AI 读取 `Source/` 下结构化文档（如 `brand_dna.md`、`system_prompt.md`）作为高质量上下文。
+**UPower Design 支持 Trae IDE 和 OpenCode。**
+多智能体协作、`Skill` 调度和 `.trae/rules` 规则注入依赖 IDE 原生 Agent 能力。
+- **完整体验（推荐 Trae / OpenCode）：** 使用 **Trae IDE** 或 **OpenCode** 打开本项目即可唤醒团队。
+- **其他 IDE（Cursor / VS Code）：** 可体验 UPower 的核心价值——**"资产证据链"**。让 AI 读取 `Source/` 目录下的结构化文档作为高质量上下文辅助编码。
 
 ---
 
 ## English
 
-This repository contains the configuration and workflow logic for **UPower Design 2.3** — an AI-native meta-framework that turns abstract ideas into production-ready frontend code through a simulated team of experts.
+This repository contains the configuration and workflow logic for **UPower Design 3.3** — an AI-native meta-framework that turns abstract ideas into production-ready frontend code through a structured multi-agent pipeline with quality assurance built in.
 
-## 0. The Collaborative Workflow (Agent Team)
+## What's New in v3.1
+
+| Change | Impact |
+|---|---|
+| **Agent = Persona + Skill Group** | Roles focus on decisions & style; procedural details moved to Action layer |
+| **Structured Plan → Steps pipeline** | Supervisor generates Plan(JSON), CLI layer translates to Steps(JSON) — reproducible & auditable |
+| **Stop Conditions** | Ambiguous input triggers mandatory user clarification — no more guessing |
+| **Automated Reviewer** | Visual + Interaction quality checks run after every build |
+| **GUI Cockpit spec** | Real-time visibility into phase, artifacts, evidence, and risks |
+
+## 0. Architecture (v3.1)
 
 ```mermaid
-graph TD
-    %% Nodes
-    User(("User / LA"))
-    Atlas["Atlas (Project Manager)"]
-    Alice["Alice (Product)"]
-    Bob["Bob (Visual)"]
-    Ken["Ken (Frontend)"]
-    Scribe["Scribe (Knowledge)"]
-    
-    %% Phase 1: Concierge
-    subgraph "Phase 1: Concierge Mode (Front of House)"
-        User -->|/opentalk| Atlas
-        Atlas -->|Consult| Alice
-        Atlas -->|Consult| Bob
-        Alice & Bob -->|Debate & Align| Strategy["Strategy & Brand DNA"]
-    end
-
-    %% Phase 2: Builder
-    subgraph "Phase 2: Builder Mode (Back of House)"
-        User -->|/build| Atlas
-        Atlas -->|Trigger| Pipeline["Manifest Pipeline"]
-        Pipeline -->|Generate| Assets["PRD / Style / Specs / Motion"]
-        Assets -->|Compile| SystemPrompt["System Prompt.md"]
-        SystemPrompt --> Ken
-        Ken -->|Code| App["React Application"]
-    end
-
-    %% Phase 3: Evolve
-    subgraph "Phase 3: Evolve"
-        App -->|Review| User
-        User -->|Feedback| Scribe
-        Scribe -->|Log| Memory["Change Notes"]
-    end
+graph LR
+    U["User Input"] --> S["Supervisor\n(Intent → Plan)"]
+    S --> T["CLI Translator\n(Plan → Steps)"]
+    T --> A["Action Runner\n(Execute Steps)"]
+    A --> O["Observations\n(Structured Evidence)"]
+    O --> S
+    S --> R["Roles / Skills\n(Generate & Review)"]
 ```
 
-## 1. Interaction Protocol
+**Key Principle**: Supervisor is the only brain. Roles produce content but don't route tools. Action layer executes but doesn't decide.
 
-We use a slash-command system to interact with the squad. See `.trae/skills/COMMAND_LIST.md`.
+## 1. Function Types
 
-- Concierge:
-  - `/opentalk [Topic]`
-  - `/consult [Agent] [Question]`
-  - `/brainstorm`
-- Builder:
-  - `/new [Name]` (init skeleton only; never auto-build)
-  - `/build` (explicit execution only)
-  - `/plan`
-  - `/hero` (preview hero key frame)
-  - `/pack [Version] [TargetPath]` (package a release folder)
+| Type | Trigger | Output |
+|---|---|---|
+| `init` | "New project XXX" | Project skeleton |
+| `define` | "Write PRD", "Generate Brand DNA" | PRD + Brand DNA |
+| `design` | "Generate design assets" | Style / Specs / Motion / Skeleton / Payload |
+| `assemble` | "Assemble system prompt" | system_prompt.md |
+| `build` | "Start coding" | React application |
+| `audit` | "Review quality" | Reviewer report |
+
+**Dependency**: `init → define → design → assemble → build → audit`
 
 ## 2. Squad Roster
 
 | Role | Name | Focus Area |
-| :--- | :--- | :--- |
-| Project Manager | Atlas | Orchestration & State Management |
-| Product Designer | Alice | Strategy, PRD, User Needs |
+|---|---|---|
+| Project Manager | Atlas | Orchestration, Plan generation, State management |
+| Product Designer | Alice | Strategy, PRD, Brand DNA, Experience goals |
 | Visual Designer | Bob | Aesthetics, Style, Motion, MCP Bridge (Figma + Image Gen) |
-| UX Architect | Mia | Structure, Wireframes |
-| System Architect | Neo | Tech Stack, Data Models |
+| UX Architect | Mia | Structure, Wireframes, Information architecture |
+| System Architect | Neo | Tech Stack, Data Models, Tokens |
 | Growth Ops | Tina | Copywriting, Marketing ROI |
-| Frontend Dev | Ken | React, Tailwind, Implementation |
-| Auditor | Judge | QA & Alignment Check |
-| Historian | Scribe | Documentation & Knowledge |
-| Internet Access (Optional) | AR (Agent Reach) | Web/GitHub/Video/Weibo retrieval |
+| Frontend Dev | Ken | React, Tailwind, Code implementation |
+| Auditor | Judge | Visual + Interaction quality review |
+| Historian | Scribe | Documentation & Knowledge retrieval |
+| Internet Access | AR (Agent Reach) | Web/GitHub/Video/Weibo retrieval (optional) |
 
 ## 3. Getting Started
 
-1. `/new <ProjectName>` → creates `Source/<ProjectName>/`
-2. `/opentalk <Topic>` → align on positioning & sections
-3. Put screenshots/notes into `Source/<ProjectName>/input/for_prd/`, update `prd(input).md` / `brand_dna.md`
-4. Generate assets:
-   - `node .trae/scaffold/bin/ask_ai.js style Source/<ProjectName>`
-   - `node .trae/scaffold/bin/ask_ai.js specs Source/<ProjectName>`
-   - `node .trae/scaffold/bin/ask_ai.js motion Source/<ProjectName>`
-   - `node .trae/scaffold/bin/ask_ai.js skeleton Source/<ProjectName>`
-   - `node .trae/scaffold/bin/ask_ai.js payload Source/<ProjectName>`
-5. Assemble system prompt:
-   - `node .trae/scaffold/bin/assemble_system_prompt.js Source/<ProjectName>`
-6. Build & validate:
-   - `/build`
-   - `node .trae/scaffold/bin/validate_delivery.js projects/<ProjectName>`
+### Quick Start
+```
+1. /new <ProjectName>           → init: create project skeleton
+2. Describe your product        → define-prd: generate PRD + Brand DNA
+3. (auto)                       → define-wireframe: Mia + Bob generate wireframe
+4. Review & approve wireframe   → user confirms before proceeding
+5. "Generate design assets"     → design: 5 design asset files
+6. "Assemble system prompt"     → assemble: compile system_prompt.md
+7. /build                       → build: generate React application
+8. (auto)                       → audit: Visual + Interaction review
+```
 
-## 4. External Integrations
+### Detailed Flow
+1. **Init**: `/new <ProjectName>` creates `Source/<ProjectName>/`
+2. **Define**: Provide product description → Alice generates `prd(input).md` (follows `kb_prd_template.md`) + `brand_dna.md`
+3. **Design**: Generate assets via pipeline:
+   - `style_prompt.md`, `design_system_specs.md`, `animation_prompts.md`, `skeleton_template.json`, `web_content.js`
+4. **Assemble**: Compile all assets into `system_prompt.md`
+5. **Build**: Generate React + TypeScript + Tailwind application in `projects/<ProjectName>/`
+6. **Audit**: Auto-run Visual & Interaction Reviewer → structured report
 
-- `agent-reach` (optional): internet access helper. See `.trae/skills/agent-reach/`.
-- MCP (via Bob): Figma layout/content extraction, Figma image download, and generative image assets. See `.trae/skills/visual-designer/SKILL.md`.
+## 4. Key Specifications
 
-## 5. Knowledgebase Templates
+### 4.1 Plan Schema
+Supervisor outputs structured Plan objects:
+```json
+{
+  "plan_id": "plan_20260416_abc123",
+  "type": "define",
+  "project_name": "MyProject",
+  "expected_output": { "files": [...], "status": "defined" },
+  "stop_conditions": [...]
+}
+```
+See: `.trae/rules/plan_schema.md`
 
-- PRD / execution templates live in `.trae/knowledgebase/file_template/`.
-- Release packaging checklist is internal and may not be included in distribution packages.
+### 4.2 Responsibility Boundaries
+| Layer | Responsibility | Does NOT |
+|---|---|---|
+| **Persona** | Decisions, style, stop conditions | Manage paths, run scripts |
+| **Action/CLI** | Execute tools, resolve paths | Make business decisions |
+| **Supervisor** | Intent → Plan, error handling | Execute tools directly |
+
+See: `.trae/rules/responsibility_boundaries.md`
+
+### 4.3 Quality Assurance
+- **PRD Completeness**: `validate_prd_completeness` checks P0 fields before downstream
+- **Visual Reviewer**: 14 rules (contrast, spacing, hierarchy, responsiveness)
+- **Interaction Reviewer**: 14 rules (keyboard, forms, feedback, accessibility)
+- **Bad Patterns**: Common anti-patterns library for prevention
+
+See: `.trae/knowledgebase/file_template/kb_reviewer_checklist_*.md`
+
+## 5. Project Structure
+
+```
+.trae/
+├── rules/                          # Highest priority constraints
+│   ├── responsibility_boundaries.md    # Persona vs Action layer
+│   ├── function_types.md               # 6 function types
+│   ├── plan_schema.md                  # Plan JSON Schema v0
+│   ├── cli_translator.md              # Steps Schema + mappings
+│   ├── supervisor_protocol.md          # Permission constraints
+│   ├── cockpit_state_fields.md         # GUI state definition
+│   ├── cockpit_wireframe.md            # GUI layout spec
+│   ├── agent_state_machine.md          # Agent state transitions
+│   └── reviewer_integration.md         # Quality check pipeline
+├── skills/                         # Agent personas
+│   ├── product-designer/SKILL.md       # Alice v3.3
+│   ├── visual-designer/SKILL.md        # Bob
+│   ├── frontend-engineer/SKILL.md      # Ken
+│   └── ...
+├── knowledgebase/                  # Reference materials
+│   ├── file_template/
+│   │   ├── kb_prd_template.md              # Executable PRD template
+│   │   ├── kb_prd_gold_standard_example.md # Gold Standard PRD
+│   │   ├── kb_prd_stop_conditions.md       # PRD completeness criteria
+│   │   ├── kb_tokens_schema.md             # Design Tokens structure
+│   │   ├── kb_design_bad_patterns_common.md    # Common anti-patterns
+│   │   ├── kb_reviewer_checklist_visual_common.md      # Visual rules
+│   │   └── kb_reviewer_checklist_interaction_common.md # Interaction rules
+│   ├── kb_common_assets_maintenance_guide.md   # Maintenance guide
+│   └── v31_demo_evidence_moments.md            # Demo evidence
+└── JOURNAL.md                      # Demo flow record
+```
+
+## 6. External Integrations
+
+- **agent-reach** (optional): Internet access helper (Web/GitHub/Video/Weibo)
+- **MCP** (via Bob): Figma layout/content extraction, image download, generative image assets
+- **skill-creator**: All skill modifications must be reviewed by skill-creator
+
+## 7. Maintaining Common Assets
+
+Common design assets (bad patterns, reviewer checklists, tokens schema) are shared across projects.
+
+| Action | How |
+|---|---|
+| **Add** | Record issue in team retro → add to common file → PR review |
+| **Modify** | Confirm necessity → team discussion → update + notify |
+| **Remove** | Mark as deprecated → keep removal record → team sign-off |
+
+**Review frequency**: Quarterly or after major project completion.
+
+See: `.trae/knowledgebase/kb_common_assets_maintenance_guide.md`
 
 ---
 
 # Changelog
 
-## v2.3 - Skill Spec Standardization (Current)
-- **What changed (结构调整点)**:
-  - Standardized every core skill to use a predictable contract: **frontmatter `description` includes “when to invoke” + expected outputs**, plus a verifiable **Success Criteria** section.
-  - Reduced fragile, environment-specific wording (e.g., tool names that may not exist outside Trae); kept instructions executable as “actions + outputs”.
-  - Refreshed packaging rules to exclude global-only/meta references and common build artifacts.
-- **Impact (影响)**:
-  - Skills trigger more reliably (less under-triggering due to vague descriptions).
-  - Users can verify outcomes deterministically by checking outputs listed in Success Criteria, rather than “vibe-based” guessing.
-  - Lower risk of “some entries don’t work” caused by non-parsable or inconsistent specs.
-- **Benefits (利好)**:
-  - Clearer auditability: each role has a testable input/output contract.
-  - Easier team iteration: contributors know exactly where to add triggers vs. where to add process steps.
-  - Better demo stability: fewer surprises across different runtime environments.
-- **Roadmap note**:
-  - Deferred scenario workflow skills (e.g., `web-maker-工作流`) to v3.0 for dedicated, scenario-based bundles.
+## v3.1 - Structured Pipeline & Quality Assurance (Current)
+- **Architecture**: Supervisor → CLI Translator → Action Runner pipeline (Plan/Steps/Observations)
+- **Persona Optimization**: Alice PoC — stripped procedural details, added Decision Heuristics + Stop Conditions + Functional API
+- **PRD System**: Executable PRD template with completeness validation, Gold Standard example, multi-terminal appendixes (Web/Mobile/Landing/Desktop)
+- **Quality Layer**: Design Tokens schema, Bad Patterns library (common + project), Visual & Interaction Reviewer Checklists (28 rules), automated review integration
+- **GUI Cockpit**: State fields definition, wireframe (Left Chat / Right Canvas), agent state machine (7 states)
+- **Demo**: End-to-end flow documentation with 5 evidence moments
+
+## v2.3 - Skill Spec Standardization
+- Standardized skill frontmatter with trigger context + verifiable outputs
+- Added Success Criteria sections across core skills
+- Refreshed packaging rules
 
 ## v2.2 - Open Source Packaging
-- Added English + 中文 README for GitHub-ready distribution.
-- Clarified Bob’s MCP bridge (Figma extraction, image download, image generation).
-- Added release packaging checklist template in knowledgebase.
+- Bilingual README, MCP bridge clarification, release packaging template
 
 ## v2.1 - Lab-Clean & Precision
-- Tone pivot to Lab-Clean Brutalism.
-- Introduced `/hero` for key-frame-first validation.
+- Tone pivot to Lab-Clean Brutalism, `/hero` command
 
 ## v2.0 - UPower Command Center
-- Unified Concierge + Builder command protocol.
-- Integrated MCP (Model Context Protocol) through the visual-designer bridge.
+- Unified Concierge + Builder command protocol, MCP integration
 
 ---
 
 ## 中文
 
-本仓库包含 **UPower Design 2.3** 的配置与工作流逻辑：用一支“模拟的多 Agent 团队”，把抽象需求转成可交付的前端页面，并在过程中留下可追溯资产。
+本仓库包含 **UPower Design 3.3** 的配置与工作流逻辑：用一支"模拟的多 Agent 团队"，把抽象需求转成可交付的前端页面，并在过程中留下可追溯的结构化证据链。
 
-## 0. 协作工作流（Concierge + Builder）
+## v3.1 核心变化
 
-（Mermaid 图同上）
+| 变化 | 影响 |
+|---|---|
+| **Agent = Persona + Skill Group** | 角色专注决策与风格；流程细节归 Action 层 |
+| **结构化 Plan → Steps 管线** | Supervisor 生成 Plan(JSON)，CLI 层转译为 Steps(JSON)——可回放、可审计 |
+| **Stop Conditions** | 模糊输入触发强制追问——禁止猜测执行 |
+| **自动 Reviewer** | 每次构建后自动运行 Visual + Interaction 质检 |
+| **GUI Cockpit 规范** | 实时可见：阶段、产物、证据、风险 |
 
-## 1. 交互协议（斜杠命令）
+## 0. 架构（v3.1）
 
-命令清单见 `.trae/skills/COMMAND_LIST.md`。
+```mermaid
+graph LR
+    U["用户输入"] --> S["Supervisor\n(意图 → Plan)"]
+    S --> T["CLI 转译层\n(Plan → Steps)"]
+    T --> A["Action 执行器\n(执行 Steps)"]
+    A --> O["Observations\n(结构化证据)"]
+    O --> S
+    S --> R["Roles / Skills\n(生成与审查)"]
+```
 
-- Concierge（对齐讨论）：`/opentalk`、`/consult`、`/brainstorm`
-- Builder（显式执行）：`/new`、`/build`、`/plan`、`/hero`、`/pack`
+**核心原则**：Supervisor 是唯一大脑。角色只生成内容，不路由工具。Action 层只执行，不决策。
 
-## 2. 团队角色（Squad）
+## 1. 功能类型
 
-- Atlas：编排与状态管理
-- Alice：策略/PRD/用户需求
-- Bob：视觉/动效，并支持 **MCP 接入（Figma + 生图）**
-- Ken：React + Tailwind 落地实现
-- Tina：文案/增长/传播 ROI
-- Scribe：里程碑记录与知识沉淀
-- AR（可选）：agent-reach 外部信息检索
+| 类型 | 触发 | 产出 |
+|---|---|---|
+| `init` | "新建项目 XXX" | 项目骨架 |
+| `define` | "写 PRD"、"生成 Brand DNA" | PRD + Brand DNA |
+| `design` | "生成设计资产" | Style / Specs / Motion / Skeleton / Payload |
+| `assemble` | "组装 system prompt" | system_prompt.md |
+| `build` | "开始构建" | React 应用 |
+| `audit` | "检查质量" | Reviewer 报告 |
 
-## 3. 快速开始（推荐录屏顺序）
+## 2. 团队角色
 
-1. `/new <ProjectName>`：生成 `Source/<ProjectName>/`
-2. `/opentalk <Topic>`：对齐方向
-3. 将截图/笔记放入 `Source/<ProjectName>/input/for_prd/`，并更新 `prd(input).md` / `brand_dna.md`
-4. 生成资产：`ask_ai.js`（style/specs/motion/skeleton/payload）
-5. 组装系统提示词：`assemble_system_prompt.js`
-6. `/build` 并用 `validate_delivery.js` 做交付校验
+- **Atlas**：编排与状态管理（Supervisor）
+- **Alice**：策略 / PRD / Brand DNA / 体验目标
+- **Bob**：视觉 / 动效，支持 MCP 接入（Figma + 生图）
+- **Mia**：信息架构 / 线框
+- **Ken**：React + Tailwind 落地实现
+- **Judge**：Visual + Interaction 质量审核
+- **Tina**：文案 / 增长 / 传播 ROI
+- **Scribe**：里程碑记录与知识沉淀
+- **AR**（可选）：agent-reach 外部信息检索
 
-## 4. 外部能力与集成
+## 3. 快速开始
 
-- agent-reach（可选）：外部信息检索辅助（GitHub/Web/视频/微博等）
-- MCP（通过 Bob）：Figma 布局/内容抽取、Figma 图片下载、生图生成补齐资产
+```
+1. /new <ProjectName>           → 初始化项目骨架
+2. 描述你的产品                  → 生成 PRD + Brand DNA
+3. (自动)                       → Mia + Bob 协作生成 wireframe
+4. 确认 wireframe                → 用户 approve 后才进入设计阶段
+5. "生成设计资产"                → 5 个设计资产文件
+6. "组装 system prompt"         → 编译 system_prompt.md
+7. /build                       → 生成 React 应用
+8. (自动)                       → Visual + Interaction 审核
+```
 
-## 5. Knowledge 模板
+## 4. 质量保障
 
-- PRD/执行计划/提案模板：`.trae/knowledgebase/file_template/`
-- 版本封装清单模板：`.trae/knowledgebase/file_template/kb_release_packaging_template.md`
+- **PRD 完备性验证**：必填字段检查 + 追问优先级
+- **Visual Reviewer**：14 条规则（对比度、间距、层级、响应式）
+- **Interaction Reviewer**：14 条规则（键盘、表单、反馈、可访问性）
+- **反例库**：通识 + 项目特定坏例
+
+## 5. 通识资产维护
+
+通识设计资产（反例库、Reviewer Checklist、Tokens Schema）跨项目共享。
+
+| 操作 | 流程 |
+|---|---|
+| **新增** | 团队复盘发现问题 → 添加到通识文件 → PR 审核 |
+| **修改** | 确认必要性 → 团队讨论 → 更新 + 通知 |
+| **移除** | 标记废弃 → 保留移除记录 → 团队签字 |
+
+**Review 频率**：每季度或重大项目结束后。
+
+详见：`.trae/knowledgebase/kb_common_assets_maintenance_guide.md`

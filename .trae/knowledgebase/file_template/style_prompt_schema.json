@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Style Prompt",
+  "description": "视觉风格定义的结构化 JSON 格式。替代 style_prompt.md。",
+  "type": "object",
+  "required": ["project_name", "style_tags", "bold_factor", "color_system", "dna_mapping"],
+  "properties": {
+    "project_name": { "type": "string" },
+    "style_tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 2,
+      "description": "来自 Prompt_Cheat_Sheet.md 的风格标签"
+    },
+    "bold_factor": {
+      "type": "object",
+      "required": ["trait", "implementation"],
+      "properties": {
+        "trait": { "type": "string", "description": "视觉特征" },
+        "implementation": { "type": "string", "description": "实现方式（含 CSS 方向）" }
+      }
+    },
+    "color_system": {
+      "type": "object",
+      "required": ["primary", "secondary", "accent"],
+      "properties": {
+        "primary": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+        "secondary": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+        "accent": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }
+      }
+    },
+    "dna_mapping": {
+      "type": "object",
+      "required": ["gravity", "lighting", "material"],
+      "properties": {
+        "gravity": { "type": "string", "description": "shadow/spacing 策略，≥1条" },
+        "lighting": { "type": "string", "description": "背景色+高光色 hex" },
+        "material": { "type": "string", "description": "≥1 个质感关键词" }
+      }
+    },
+    "midjourney_prompt": {
+      "type": "string",
+      "description": "可选：高保真图像生成 prompt"
+    }
+  }
+}

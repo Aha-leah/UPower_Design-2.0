@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Brand DNA",
+  "description": "品牌 DNA 四维定义的结构化 JSON 格式。替代 brand_dna.md。",
+  "type": "object",
+  "required": ["project_name", "keywords", "gravity", "lighting", "material", "tempo"],
+  "properties": {
+    "project_name": {
+      "type": "string"
+    },
+    "keywords": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 2,
+      "maxItems": 5,
+      "description": "核心关键词（2-5 个）"
+    },
+    "gravity": {
+      "type": "object",
+      "required": ["direction", "design_impact"],
+      "properties": {
+        "direction": { "type": "string", "description": "重/轻" },
+        "design_impact": { "type": "string", "description": "对阴影/间距/字重的具体影响" }
+      }
+    },
+    "lighting": {
+      "type": "object",
+      "required": ["style", "palette_hint"],
+      "properties": {
+        "style": { "type": "string", "description": "光影风格（具体光源描述）" },
+        "palette_hint": { "type": "string", "description": "配色倾向（含至少 1 个 hex 值）" }
+      }
+    },
+    "material": {
+      "type": "object",
+      "required": ["texture", "feel"],
+      "properties": {
+        "texture": { "type": "string", "description": "材质词：纸/玻璃/钢/混凝土/液体" },
+        "feel": { "type": "string", "description": "触感描述" }
+      }
+    },
+    "tempo": {
+      "type": "object",
+      "required": ["rhythm", "info_density", "duration_range"],
+      "properties": {
+        "rhythm": { "type": "string", "description": "节奏描述" },
+        "info_density": { "type": "string", "enum": ["low", "medium", "high"] },
+        "duration_range": { "type": "string", "description": "建议动效时长范围（如 200-300ms）" }
+      }
+    }
+  }
+}

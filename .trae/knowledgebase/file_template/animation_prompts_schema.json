@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Animation Prompts",
+  "description": "动效设计定义的结构化 JSON 格式。替代 animation_prompts.md。",
+  "type": "object",
+  "required": ["project_name", "motion_personality", "physics", "base_durations", "micro_interactions"],
+  "properties": {
+    "project_name": { "type": "string" },
+    "motion_personality": {
+      "type": "string",
+      "description": "来自 Motion_Design.md 的动效性格标签"
+    },
+    "physics": {
+      "type": "object",
+      "required": ["easing"],
+      "properties": {
+        "easing": { "type": "string", "description": "cubic-bezier 值，如 cubic-bezier(0.19, 1, 0.22, 1)" },
+        "spring": {
+          "type": "object",
+          "properties": {
+            "stiffness": { "type": "number" },
+            "damping": { "type": "number" }
+          }
+        }
+      }
+    },
+    "base_durations": {
+      "type": "object",
+      "required": ["fast", "normal", "slow"],
+      "properties": {
+        "fast": { "type": "string", "description": "ms 值" },
+        "normal": { "type": "string", "description": "ms 值" },
+        "slow": { "type": "string", "description": "ms 值" }
+      }
+    },
+    "micro_interactions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["element", "trigger", "effect"],
+        "properties": {
+          "element": { "type": "string" },
+          "trigger": { "type": "string" },
+          "effect": { "type": "string", "description": "含具体数值" }
+        }
+      },
+      "minItems": 1
+    },
+    "choreography": {
+      "type": "object",
+      "properties": {
+        "stagger_children": { "type": "string", "description": "如 0.05s" },
+        "entrance_pattern": { "type": "string" }
+      }
+    }
+  }
+}
