@@ -6,7 +6,7 @@
 
 ---
 
-## ⚠️ Runtime Dependency & Evaluation Guide (评委体验必读)
+## ⚠️ Runtime Dependency & Usage Guide（运行依赖与使用指南）
 
 ### English
 **UPower Design runs on Trae IDE and OpenCode.**
@@ -33,7 +33,7 @@ This repository contains the configuration and workflow logic for **UPower Desig
 | **Agent = Persona + Skill Group** | Roles focus on decisions & style; procedural details moved to Action layer |
 | **Structured Plan → Steps pipeline** | Supervisor generates Plan(JSON), CLI layer translates to Steps(JSON) — reproducible & auditable |
 | **Stop Conditions** | Ambiguous input triggers mandatory user clarification — no more guessing |
-| **Automated Reviewer** | Visual + Interaction quality checks run after every build |
+| **Automated QA Review** | Visual + Interaction quality checks run after every build |
 | **GUI Cockpit spec** | Real-time visibility into phase, artifacts, evidence, and risks |
 
 ## 0. Architecture (v3.1)
@@ -59,7 +59,7 @@ graph LR
 | `design` | "Generate design assets" | Style / Specs / Motion / Skeleton / Payload |
 | `assemble` | "Assemble system prompt" | system_prompt.md |
 | `build` | "Start coding" | React application |
-| `audit` | "Review quality" | Reviewer report |
+| `audit` | "Review quality" | QA report |
 
 **Dependency**: `init → define → design → assemble → build → audit`
 
@@ -74,7 +74,7 @@ graph LR
 | System Architect | Neo | Tech Stack, Data Models, Tokens |
 | Growth Ops | Tina | Copywriting, Marketing ROI |
 | Frontend Dev | Ken | React, Tailwind, Code implementation |
-| Auditor | Judge | Visual + Interaction quality review |
+| Quality Reviewer | QA | Visual + Interaction quality review |
 | Historian | Scribe | Documentation & Knowledge retrieval |
 | Internet Access | AR (Agent Reach) | Web/GitHub/Video/Weibo retrieval (optional) |
 
@@ -89,7 +89,7 @@ graph LR
 5. "Generate design assets"     → design: 5 design asset files
 6. "Assemble system prompt"     → assemble: compile system_prompt.md
 7. /build                       → build: generate React application
-8. (auto)                       → audit: Visual + Interaction review
+8. (auto)                       → audit: Visual + Interaction QA review
 ```
 
 ### Detailed Flow
@@ -251,7 +251,7 @@ graph LR
 | `design` | "生成设计资产" | Style / Specs / Motion / Skeleton / Payload |
 | `assemble` | "组装 system prompt" | system_prompt.md |
 | `build` | "开始构建" | React 应用 |
-| `audit` | "检查质量" | Reviewer 报告 |
+| `audit` | "检查质量" | 质量报告 |
 
 ## 2. 团队角色
 
@@ -260,7 +260,7 @@ graph LR
 - **Bob**：视觉 / 动效，支持 MCP 接入（Figma + 生图）
 - **Mia**：信息架构 / 线框
 - **Ken**：React + Tailwind 落地实现
-- **Judge**：Visual + Interaction 质量审核
+- **QA**：Visual + Interaction 质量走查
 - **Tina**：文案 / 增长 / 传播 ROI
 - **Scribe**：里程碑记录与知识沉淀
 - **AR**（可选）：agent-reach 外部信息检索
